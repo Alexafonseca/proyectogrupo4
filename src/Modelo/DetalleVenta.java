@@ -66,6 +66,10 @@ package Modelo;
                 this.precio = precio;
             }
 
+    public int getIdDetalleVenta() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
    
 
                 }

@@ -7,6 +7,7 @@ package Controlador;
 import DAO.DetalleVentaDAO;
 import Modelo.DetalleVenta;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 
@@ -15,7 +16,7 @@ import javax.swing.JOptionPane;
  * @author eliab
  */
         public class DetalleVentaControlador {
-
+   
             private final DetalleVentaDAO detalleVentaDAO;
 
             public DetalleVentaControlador() {
@@ -46,22 +47,38 @@ import javax.swing.JOptionPane;
                     return null;
                 }
             }
-
-            // Método para actualizar un detalle de venta existente
-            public void actualizarDetalleVenta(int idDetalleVenta, int idProducto, int idVenta, int cantidadProducto, float precio) {
-                try {
-                    DetalleVenta detalle = new DetalleVenta();
-                    detalle.setId_DetalleVenta(idDetalleVenta);
-                    detalle.setId_Producto(idProducto);
-                    detalle.setId_Venta(idVenta);
-                    detalle.setCantidad_Producto(cantidadProducto);
-                    detalle.setPrecio(precio);
-                    detalleVentaDAO.actualizarDetalleVenta(detalle);
-                    JOptionPane.showMessageDialog(null, "Detalle de venta actualizado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                } catch (SQLException e) {
-                    JOptionPane.showMessageDialog(null, "Error al actualizar el detalle de venta: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            
+               public List<DetalleVenta> obtenerDetallesPorIdVenta(int idVenta) {
+        try {
+            List<DetalleVenta> todos = detalleVentaDAO.leerTodosDetallesVenta();
+            List<DetalleVenta> filtrados = new ArrayList<>();
+            for (DetalleVenta detalle : todos) {
+                if (detalle.getId_Venta() == idVenta) {
+                    filtrados.add(detalle);
                 }
             }
+            return filtrados;
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener detalles por ID de venta: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return new ArrayList<>();
+        }
+    }
+
+            // Método para actualizar un detalle de venta existente
+                    public void actualizarDetalleVenta(int idDetalleVenta, int idVenta, int idProducto, int cantidadProducto, float precio) {
+             try {
+                 DetalleVenta detalle = new DetalleVenta();
+                 detalle.setId_DetalleVenta(idDetalleVenta); // ID existente
+                 detalle.setId_Venta(idVenta);
+                 detalle.setId_Producto(idProducto);
+                 detalle.setCantidad_Producto(cantidadProducto);
+                 detalle.setPrecio(precio);
+                 detalleVentaDAO.actualizarDetalleVenta(detalle);
+                 JOptionPane.showMessageDialog(null, "Detalle de venta actualizado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+             } catch (SQLException e) {
+                 JOptionPane.showMessageDialog(null, "Error al actualizar el detalle de venta: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+             }
+         }
 
             // Método para eliminar un detalle de venta
             public void eliminarDetalleVenta(int idDetalleVenta) {

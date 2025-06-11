@@ -33,4 +33,8 @@ import java.sql.*;
                        System.err.println("Error de conexión: " + e.getMessage());
                    }   
                }
+
+    public static PreparedStatement prepareStatement(String sql) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
            }

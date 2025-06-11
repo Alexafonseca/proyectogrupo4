@@ -17,7 +17,7 @@ import java.util.List;
 
             public void crearDetalleVenta(DetalleVenta detalle) throws SQLException {
                 String sql = """
-                        INSERT INTO Detalles_Ventas (
+                        INSERT INTO Detalles_Venta (
                             id_venta, 
                             id_producto, 
                             cantidad_producto, 
@@ -35,7 +35,7 @@ import java.util.List;
             }
 
             public List<DetalleVenta> leerTodosDetallesVenta() throws SQLException {
-                String sql = "SELECT * FROM Detalles_Ventas";
+                String sql = "SELECT * FROM Detalles_Venta";
                 List<DetalleVenta> detalles = new ArrayList<>();
 
                 try (Connection c = ConexionBD.getConnection(); 
@@ -43,7 +43,7 @@ import java.util.List;
                      ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
                         DetalleVenta detalle = new DetalleVenta();
-                        detalle.setId_DetalleVenta(rs.getInt("id_detalle_venta"));
+                        detalle.setId_DetalleVenta(rs.getInt("id_DetalleVenta"));
                         detalle.setId_Venta(rs.getInt("id_venta"));
                         detalle.setId_Producto(rs.getInt("id_producto"));
                         detalle.setCantidad_Producto(rs.getInt("cantidad_producto"));
@@ -54,22 +54,23 @@ import java.util.List;
                 return detalles;
             }
 
-            public void actualizarDetalleVenta(DetalleVenta detalle) throws SQLException {
-                String sql = "UPDATE Detalles_Ventas SET id_venta = ?, id_producto = ?, cantidad_producto = ?, precio = ? WHERE id_detalle_venta = ?";
+                    public void actualizarDetalleVenta(DetalleVenta detalle) throws SQLException {
+             String sql = "UPDATE Detalles_Venta SET id_venta = ?, id_producto = ?, cantidad_producto = ?, precio = ? WHERE id_detalle_venta = ?";
 
-                try (Connection c = ConexionBD.getConnection();
-                     PreparedStatement stmt = c.prepareStatement(sql)) {
-                    stmt.setInt(1, detalle.getId_Venta());
-                    stmt.setInt(2, detalle.getId_Producto());
-                    stmt.setInt(3, detalle.getCantidad_Producto());
-                    stmt.setFloat(4, detalle.getPrecio());
-                    stmt.setInt(5, detalle.getId_DetalleVenta());
-                    stmt.executeUpdate();
-                }
-            }
+             try (Connection c = ConexionBD.getConnection();
+                  PreparedStatement stmt = c.prepareStatement(sql)) {
+                 stmt.setInt(1, detalle.getId_Venta());
+                 stmt.setInt(2, detalle.getId_Producto());
+                 stmt.setInt(3, detalle.getCantidad_Producto());
+                 stmt.setFloat(4, detalle.getPrecio());
+                 stmt.setInt(5, detalle.getId_DetalleVenta()); // Aquí pasas el ID para el WHERE
+                 stmt.executeUpdate();
+             }
+         }
+
 
             public void eliminarDetalleVenta(int idDetalleVenta) throws SQLException {
-                String sql = "DELETE FROM Detalles_Ventas WHERE id_detalle_venta = ?";
+                String sql = "DELETE FROM Detalles_Venta WHERE id_detalle_venta = ?";
 
                 try (Connection c = ConexionBD.getConnection();
                      PreparedStatement stmt = c.prepareStatement(sql)) {

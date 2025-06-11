@@ -1,4 +1,3 @@
-
 package Modelo;
 
 /**
@@ -8,13 +7,13 @@ package Modelo;
  */
 
 public class Cliente {
- private int id_Cliente;
- private String Nombre1;
- private String Nombre2;
- private String Apellido1;
- private String Apellido2;
- private String Direccion;
- private String Telefono;
+    private int id_Cliente;
+    private String Nombre1;
+    private String Nombre2;
+    private String Apellido1;
+    private String Apellido2;
+    private String Direccion;
+    private String Telefono;
 
     public Cliente() {
     }
@@ -85,6 +84,11 @@ public class Cliente {
         this.Telefono = Telefono;
     }
 
-    
-    
+     @Override
+    public String toString() {
+        // Combinar nombre y apellido, manejando casos donde Nombre2 o Apellido2 puedan ser null
+        String nombreCompleto = Nombre1 + (Nombre2 != null && !Nombre2.isEmpty() ? " " + Nombre2 : "") + " " +
+                               Apellido1 + (Apellido2 != null && !Apellido2.isEmpty() ? " " + Apellido2 : "");
+        return nombreCompleto.trim();
+    }
 }
