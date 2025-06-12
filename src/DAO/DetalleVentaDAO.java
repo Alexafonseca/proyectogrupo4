@@ -18,20 +18,20 @@ import java.util.List;
             public void crearDetalleVenta(DetalleVenta detalle) throws SQLException {
                 String sql = """
                         INSERT INTO Detalles_Venta (
-                            id_venta, 
-                            id_producto, 
-                            cantidad_producto, 
-                            precio
+                            id_Venta, 
+                            id_Producto, 
+                            Cantidad_Producto, 
+                            Precio
                         ) VALUES (?, ?, ?, ?)""";
 
-                try (Connection c = ConexionBD.getConnection(); 
-                     PreparedStatement stmt = c.prepareStatement(sql)) {
-                    stmt.setInt(1, detalle.getId_Venta());
-                    stmt.setInt(2, detalle.getId_Producto());
-                    stmt.setInt(3, detalle.getCantidad_Producto());
-                    stmt.setFloat(4, detalle.getPrecio());
-                    stmt.executeUpdate();
-                }
+                    Connection c = ConexionBD.getConnection(); 
+                        PreparedStatement stmt = c.prepareStatement(sql); 
+                       stmt.setInt(1, detalle.getId_Venta());
+                       stmt.setInt(2, detalle.getId_Producto());
+                       stmt.setInt(3, detalle.getCantidad_Producto());
+                       stmt.setFloat(4, detalle.getPrecio());
+                       stmt.executeUpdate();
+
             }
 
             public List<DetalleVenta> leerTodosDetallesVenta() throws SQLException {
@@ -70,7 +70,7 @@ import java.util.List;
 
 
             public void eliminarDetalleVenta(int idDetalleVenta) throws SQLException {
-                String sql = "DELETE FROM Detalles_Venta WHERE id_detalle_venta = ?";
+                String sql = "DELETE FROM Detalles_Venta WHERE id_DetalleVenta = ?";
 
                 try (Connection c = ConexionBD.getConnection();
                      PreparedStatement stmt = c.prepareStatement(sql)) {

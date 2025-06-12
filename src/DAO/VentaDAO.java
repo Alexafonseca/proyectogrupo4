@@ -94,9 +94,9 @@ public Venta obtenerVentaPorId(int idVenta) throws SQLException {
                     try (Connection c = ConexionBD.getConnection();
                          PreparedStatement stmt = c.prepareStatement(sql)) {
                         stmt.setInt(1, venta.getId_Clientes());
-                        stmt.setInt(3, venta.getCantidad_Pro());
-                        stmt.setTimestamp(4, new java.sql.Timestamp(venta.getFe_Venta().getTime()));
-                        stmt.setInt(5, venta.getId_Ventas());
+                        stmt.setInt(2, venta.getCantidad_Pro());
+                        stmt.setTimestamp(3, new java.sql.Timestamp(venta.getFe_Venta().getTime()));
+                        stmt.setInt(4, venta.getId_Ventas());
                         stmt.executeUpdate();
                     }
                 }

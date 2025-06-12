@@ -27,10 +27,11 @@ import javax.swing.JOptionPane;
             public void crearDetalleVenta(int idDetalleVenta, int idProducto, int cantidadProducto, float precio) {
                 try {
                     DetalleVenta detalle = new DetalleVenta();
-                    detalle.setId_DetalleVenta(idDetalleVenta);
+                    detalle.setId_Venta(idDetalleVenta);
                     detalle.setId_Producto(idProducto);
                     detalle.setCantidad_Producto(cantidadProducto);
                     detalle.setPrecio(precio);
+                    System.out.println(detalle.toString());
                     detalleVentaDAO.crearDetalleVenta(detalle);
                     JOptionPane.showMessageDialog(null, "Detalle de venta creado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 } catch (SQLException e) {

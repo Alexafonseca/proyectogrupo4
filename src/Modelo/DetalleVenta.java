@@ -65,11 +65,10 @@ package Modelo;
             public void setPrecio(float precio) {
                 this.precio = precio;
             }
+    @Override
+                public String toString(){
+                return "idVenta: " + this.id_Venta + " idProducto: " + this.id_Producto;
 
-    public int getIdDetalleVenta() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-   
+                }
 
                 }

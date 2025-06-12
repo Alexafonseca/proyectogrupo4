@@ -316,6 +316,11 @@ public class VistaVenta extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
+        tablaVentas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablaVentasMouseClicked(evt);
+            }
+        });
         jScrollPane4.setViewportView(tablaVentas);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -686,6 +691,8 @@ try {
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
 try {
+    
+        
         int filaSeleccionada = tablaVentas.getSelectedRow();
         if (filaSeleccionada == -1) {
             JOptionPane.showMessageDialog(this, "Seleccione una venta para actualizar.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -718,13 +725,13 @@ try {
         }
 
         // Calcular total de la venta sumando subtotales
-        float totalVenta = 0;
+        int totalVenta = 0;
         for (int i = 0; i < rowCount; i++) {
             totalVenta += ((Number) modelDetalles.getValueAt(i, 4)).floatValue();
         }
 
         // Actualizar la venta principal (si tu método espera float, no hagas cast a int)
-        ventaControlador.actualizarVenta(0, 0, fechaVenta, 0);
+        ventaControlador.actualizarVenta(idVenta, idCliente, fechaVenta, totalVenta);
 
         // Eliminar detalles antiguos de la venta para luego insertar los nuevos
         List<DetalleVenta> detallesAntiguos = detalleVentaControlador.obtenerDetallesPorIdVenta(idVenta);
@@ -737,7 +744,12 @@ try {
             int idProducto = ((Number) modelDetalles.getValueAt(i, 0)).intValue();
             float precioUnitario = ((Number) modelDetalles.getValueAt(i, 2)).floatValue();
             int cantidad = ((Number) modelDetalles.getValueAt(i, 3)).intValue();
-
+          
+            System.out.println(idProducto);
+            System.out.println(idVenta);
+            System.out.println(cantidad);
+            
+            
             detalleVentaControlador.crearDetalleVenta(idVenta, idProducto, cantidad, precioUnitario);
         }
 
@@ -919,6 +931,98 @@ try {
     private void comboClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboClientesActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_comboClientesActionPerformed
+
+    private void tablaVentasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaVentasMouseClicked
+        // Verificar si es un doble clic
+    if (evt.getClickCount() == 2) {
+        try {
+            btnEliminar.setEnabled(false);
+            btnGuardar.setEnabled(false);
+            
+            // Obtener el índice de la fila seleccionada en tablaVentas
+            int filaSeleccionada = tablaVentas.getSelectedRow();
+            if (filaSeleccionada == -1) {
+                return; // No hacer nada si no hay fila seleccionada
+            }
+
+            // Obtener el idVenta de la fila seleccionada
+            DefaultTableModel modelVentas = (DefaultTableModel) tablaVentas.getModel();
+            int idVenta = (int) modelVentas.getValueAt(filaSeleccionada, 0);
+
+            // Obtener la venta seleccionada para acceder a sus datos
+            List<Venta> ventas = ventaControlador.obtenerTodasVentas();
+            Venta ventaSeleccionada = null;
+            for (Venta v : ventas) {
+                if (v.getId_Ventas() == idVenta) {
+                    ventaSeleccionada = v;
+                    break;
+                }
+            }
+            if (ventaSeleccionada == null) {
+                JOptionPane.showMessageDialog(this, "Venta no encontrada.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Cargar cliente en comboClientes
+            List<Cliente> clientes = clienteControlador.obtenerTodosClientes();
+            int indiceCliente = -1;
+            for (int i = 0; i < clientes.size(); i++) {
+                if (clientes.get(i).getId_Cliente()== ventaSeleccionada.getId_Clientes()) {
+                    indiceCliente = i;
+                    break;
+                }
+            }
+            if (indiceCliente != -1) {
+                idClienteSeleccionado = ventaSeleccionada.getId_Clientes();
+                comboClientes.setSelectedIndex(indiceCliente);
+            } else {
+                JOptionPane.showMessageDialog(this, "Cliente no encontrado.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+             
+            // Detener el timer actual
+            if (timer != null) {
+                timer.stop();
+            }
+            
+            // Asignar la hora al label
+            horabd = true;
+            java.text.SimpleDateFormat horaFormato = new java.text.SimpleDateFormat("HH:mm:ss");
+            String horaVenta = horaFormato.format(ventaSeleccionada.getFe_Venta());
+            Hora.setText(horaVenta); // Ajusta 'horaLabel' al nombre real de tu JLabel
+
+            // Cargar la fecha en selectorfechaContratacion
+            selectorfechaVenta.setDate(ventaSeleccionada.getFe_Venta());
+
+            // Limpiar y cargar los detalles en tablaDetalles
+            DefaultTableModel modelDetalles = (DefaultTableModel) tablaDetalles.getModel();
+            modelDetalles.setRowCount(0);
+
+            List<DetalleVenta> detalles = detalleVentaControlador.obtenerTodosDetalleVenta();
+            if (detalles != null) {
+                for (DetalleVenta detalle : detalles) {
+                    if (detalle.getId_Venta()== idVenta) {
+                        Producto producto = productoControlador.obtenerProductoPorId(detalle.getId_Producto());
+                        String nombreProducto = (producto != null) ? producto.getNombre_prod(): "Desconocido";
+
+                        Object[] row = {
+                            detalle.getId_Producto(),
+                            nombreProducto,
+                            detalle.getPrecio(),
+                            detalle.getCantidad_Producto(),
+                            detalle.getPrecio()* detalle.getCantidad_Producto() // Subtotal
+                        };
+                        modelDetalles.addRow(row);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar los datos de la venta: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    }//GEN-LAST:event_tablaVentasMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
